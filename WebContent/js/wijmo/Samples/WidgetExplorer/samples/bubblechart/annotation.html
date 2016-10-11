@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<title>BubbleChart - Annotation</title>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	<meta name="description" content="%description%" />
+	<meta name="keywords" content="" />
+	<meta name="author" content="ComponentOne" />
+
+	<link href="../../../../Themes/rocket/jquery-wijmo.css" rel="stylesheet" type="text/css" />
+    <link href="../../../../css/jquery.wijmo-pro.all.3.20162.103.min.css" rel="stylesheet" type="text/css" />
+    <script src="../../js/require.js" type="text/javascript"></script>
+    <script src="../../js/require.wijmo.config.js" type="text/javascript"></script>
+
+	<script id="scriptInit" type="text/javascript">
+		require(["wijmo.wijbubblechart"], function () {
+			$(document).ready(function () {
+				// defining multiple arrays as data sources. As in previous sample you can use any names for your properties
+				// Note that this time we are going to use shared 'x' axis for all series. So it is defind below in 'data' property
+				// and not presented in data source arrays
+				var msft = [{
+					stock: 28.09,
+					cap: 223.35
+				}, {
+					stock: 30.39,
+					cap: 225.88
+				}, {
+					stock: 30.38,
+					cap: 268.42
+				}],
+				goog = [{
+					stock: 580.11,
+					cap: 202.46
+				}, {
+					stock: 618.25,
+					cap: 197.00
+				}, {
+					stock: 400.24,
+					cap: 195.16
+				}],
+				aapl = [{
+					stock: 400.95,
+					cap: 394.55
+				}, {
+					stock: 300.55,
+					cap: 460.05
+				}, {
+					stock: 583.09,
+					cap: 508.30
+				}];
+
+
+				$("#wijbubblechart").wijbubblechart({
+					// defining shared 'x' axis values using 'data.x' proprty
+					data: {
+						x: [new Date(2015, 0, 1), new Date(2015, 0, 2), new Date(2015, 0, 3)]
+					},
+					// defining series using unique array as data source for each one
+					seriesList: [
+					{
+						label: "GOOG", // setup series name
+						dataSource: goog, // defining an arrays as data source for the current series
+						data: {
+							y: { bind: "stock" }, // binding the 'stock' property value of the each object in array for the 'y' axis
+							y1: { bind: "cap" } // binding the 'cap' property value of the each object in array for the 'y1' axis
+						},
+						legendEntry: true,
+					},
+					{
+						label: "AAPL",
+						dataSource: aapl,
+						data: {
+							y: { bind: "stock" },
+							y1: { bind: "cap" }
+						},
+						legendEntry: true,
+					}, {
+						label: "MSFT",
+						dataSource: msft,
+						data: {
+							y: { bind: "stock" },
+							y1: { bind: "cap" }
+						},
+						legendEntry: true,
+					}],
+					legend: {
+						size: {
+							width: 20,
+							height: 14
+						}
+					},
+					shadow: false,
+					axis: {
+						y: {
+							text: "Stock price",
+							labels: {
+								textAlign: "far"
+							}
+						},
+						x: {
+							text: "2015",
+							tickMajor: {
+								position: "inside"
+							},
+							labels: {
+								textAlign: "near"
+							},
+							annoFormatString: "D"
+						}
+					},
+					hint: {
+						content: function () {
+							return "" + this.data.label + " \n"
+								+ "Stock price: " + Globalize.format(this.y, "c2") + "\n"
+								+ "Capitalization: " + this.data.y1 + "B";
+						},
+						style: {
+							stroke: "#000",
+							"stroke-width": 10
+						}
+					},
+					annotations: [
+						{
+							type: "circle",
+							content: "Relative [LeftMiddle]",
+							tooltip: "Relative [LeftMiddle]",
+							attachment: "relative",
+							radius: 50,
+							point: { x: 0.1, y: 0.5 },
+							style: { fill: '#01DFD7', "fill-opacity": 0.25 }
+						},
+						{
+							type: "rect",
+							content: "x:430,y:120+x:50,y:-10",
+							tooltip: "x:430,y:120+x:50,y:-10",
+							attachment: "absolute",
+							width: 120,
+							height: 50,
+							point: { x: 430, y: 120 },
+							offset: { x: 50, y: -10 },
+							style: { fill: '#C0AFA7', "fill-opacity": 0.35 }
+						},
+						{
+							type: "circle",
+							content: "Absolute",
+							tooltip: "Absolute",
+							attachment: "absolute",
+							radius: 45,
+							point: { x: 600, y: 260 },
+							style: { fill: '#9AE9D0', "fill-opacity": 0.5 }
+						},
+						{
+							type: "image",
+							attachment: "dataIndex",
+							href: "./samples/images/wijmo_flexible.png",
+							tooltip: "wijmo_flexible.png",
+							content: "Image",
+							width: 30,
+							height: 30,
+							seriesIndex: 0,
+							pointIndex: 1
+						},
+						{
+							type: "circle",
+							content: "DATA",
+							tooltip: "DATA",
+							attachment: "dataIndex",
+							seriesIndex: 1,
+							pointIndex: 1,
+							radius: 20,
+							style: { fill: '#FF1109', "fill-opacity":0.5}
+						},
+						{
+							type: "circle",
+							content: "dataCoordinate",
+							tooltip: "dataCoordinate",
+							attachment: "dataCoordinate",
+							point: { x: new Date(2015, 0, 2, 14, 0, 0), y: 150 },
+							radius: 40,
+							style: { fill: '#FFFF01', "fill-opacity": 0.5 }
+						},
+						{
+							type: "rect",
+							content: "SerieTwo",
+							tooltip: "SerieTwo",
+							attachment: "dataIndex",
+							seriesIndex: 1,
+							pointIndex: 0,
+							width: 50,
+							height: 30,
+							r: 3,
+							offset: { x: 30, y: 0 },
+							style: {
+								"fill": "#FE2E2E",
+								"stroke": "#FFA9DB",
+								"fill-opacity": 0.5,
+								"stroke-width": 2,
+								"stroke-opacity": 0.75
+							}
+						},
+						{
+							type: "ellipse",
+							content: "SerieOnePointTwo",
+							tooltip: "SerieOnePointTwo",
+							attachment: "dataIndex",
+							seriesIndex: 1,
+							pointIndex: 2,
+							width: 90,
+							height: 30,
+							r: 3,
+							style: {
+								"fill": "#FF7700",
+								"stroke": "#FFA9DB",
+								"fill-opacity": 0.7,
+								"stroke-width": 2,
+								"stroke-opacity": 0.75
+							}
+						},
+						{
+							type: "line",
+							content: "LineText",
+							tooltip: "LineText",
+							start: { x: 10, y: 10 },
+							end: { x: 100, y: 100 },
+							style: {
+								"fill": "#FE2E2E",
+								"stroke": "#01A9DB",
+								"fill-opacity": 2,
+								"stroke-width": 5,
+								"stroke-opacity": 1
+							}
+						},
+						{
+							type: "text",
+							text: "BubbleChart\nAnnotation",
+							tooltip: "BubbleChart Annotation",
+							point: { x: 300, y: 280 },
+							style: {
+								"font-size": 23,
+								"font-family": "Trebuchet MS"
+							}
+						},
+						{
+							type: "polygon",
+							content: "Polygon",
+							tooltip: "Polygon",
+							points: [
+										{
+											"x": 200,
+											"y": 0
+										},
+										{
+											"x": 150,
+											"y": 50
+										},
+										{
+											"x": 175,
+											"y": 100
+										},
+										{
+											"x": 225,
+											"y": 100
+										},
+										{
+											"x": 250,
+											"y": 50
+										}
+							],
+							style: {
+								"fill": "#FEAA2E",
+								"stroke": "#01A9DB"
+							}
+						}
+					]
+				});
+			});
+		});
+	</script>
+</head>
+<body class="demo-single">
+	<div class="container">
+		<div class="header">
+			<h2>Annotation</h2>
+		</div>
+		<div class="main demo">
+			<!-- Begin demo markup -->
+			<div id="wijbubblechart" class="ui-widget ui-widget-content ui-corner-all" style="width: 756px; height: 475px;">
+			</div>
+		</div>
+		<div class="footer demo-description">
+			<p>This demo shows how to use annotations in wijbubblechart.</p>
+		</div>
+	</div>
+</body>
+</html>

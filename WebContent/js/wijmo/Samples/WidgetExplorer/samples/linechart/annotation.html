@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<title>LineChart - Annotation</title>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	<meta name="description" content="%description%" />
+	<meta name="keywords" content="" />
+	<meta name="author" content="ComponentOne" />
+
+	<link href="../../../../Themes/rocket/jquery-wijmo.css" rel="stylesheet" type="text/css" />
+    <link href="../../../../css/jquery.wijmo-pro.all.3.20162.103.min.css" rel="stylesheet" type="text/css" />
+    <script src="../../js/require.js" type="text/javascript"></script>
+    <script src="../../js/require.wijmo.config.js" type="text/javascript"></script>
+
+	<script id="scriptInit" type="text/javascript">
+		require(["wijmo.wijlinechart"], function () {
+			$(document).ready(function () {
+				$("#wijlinechartDefault").wijlinechart({
+					textStyle: {
+						"font-size": "13px",
+						"font-family": '"Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu Sans", "Helvetica Neue", Arial, sans-serif'
+					},
+					header: {
+						text: "2010 Sales Revenue"
+					},
+					axis: {
+						y: {
+							text: "USD (thousands)",
+							textStyle: {
+								"font-weight": "normal"
+							},
+							min: 0, //Minimum value for axis
+							max: 4000, //Maximum value for axis
+							autoMin: false, //Tell the chart not to automatically generate minimum value for axis
+							autoMax: false, //Tell the chart not to automatically generate maximum value for axis
+							annoFormatString: 'n0', //Format values on axis as number with 0 decimal places. For example, 4.00 would be shown as 4
+							alignment: "far", //axis text aligned away from xy intersection
+							labels: { textAlign: "near" } //Axis labels aligned near axis
+						},
+						x: {
+							textStyle: {
+								"font-weight": "normal"
+							},
+							tickMajor: {
+								position: "outside",//Position tick marks outside of the axis line
+								style: {
+									stroke: "#999999"//Make the tick marks match axis line color
+								}
+							},
+							annoMethod: "valueLabels",
+							valueLabels: [
+								new Date('1/1/2010'),
+								new Date('2/1/2010'),
+								new Date('3/1/2010'),
+								new Date('4/1/2010'),
+								new Date('5/1/2010'),
+								new Date('6/1/2010'),
+								new Date('7/1/2010'),
+								new Date('8/1/2010'),
+								new Date('9/1/2010'),
+								new Date('10/1/2010'),
+								new Date('11/1/2010'),
+								new Date('12/1/2010')
+							]
+						}
+					},
+					showChartLabels: false,
+					hint: {
+						//Display custom information in tooltip. If not set, the content will default to x and y data display values
+						content: function () {
+							//Check if multiple data points are on one axis entry. For example, multiple data entries for a single date. 
+							if ($.isArray(this)) {
+								var content = "";
+								//Multiple entries of data on this point, so we need to loop through them to create the tooltip content.
+								for (var i = 0; i < this.length; i++) {
+									content += this[i].lineSeries.label + ': ' + Globalize.format(this[i].y * 1000, 'c0') + '\n';
+								}
+								return content;
+							}
+							else {
+								//Only a single data point, so we return a formatted version of it. "/n" is a line break.
+								return this.data.lineSeries.label + '\n' +
+										//Format x as Short Month and long year (Jan 2010). Then format y value as calculated currency with no decimal ($1,983,000). 
+									Globalize.format(this.x, 'MMM yyyy') + ': ' + Globalize.format(this.y * 1000, 'c0');
+							}
+						},
+						contentStyle: {
+							"font-size": "14px",
+							"font-family": '"Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu Sans", "Helvetica Neue", Arial, sans-serif'
+						},
+						style: {
+							fill: "#444444"
+						},
+						compass: "northeast"
+					},
+					indicator: {
+						visible: true
+					},
+					legend: {
+						visible: true
+					},
+					data: {
+						//X axis values as Date objects. We are using a shared x value array for this chart with multiple y value arrays.
+						x: [
+							new Date('1/1/2010'),
+							new Date('2/1/2010'),
+							new Date('3/1/2010'),
+							new Date('4/1/2010'),
+							new Date('5/1/2010'),
+							new Date('6/1/2010'),
+							new Date('7/1/2010'),
+							new Date('8/1/2010'),
+							new Date('9/1/2010'),
+							new Date('10/1/2010'),
+							new Date('11/1/2010'),
+							new Date('12/1/2010')]
+					},
+					seriesList: [{
+						label: "Domestic", //Label shown in legend
+						legendEntry: true,
+						markers: {
+							visible: true,
+							type: "circle"
+						},
+						data: {
+							//Y axis values for 1st series
+							y: [
+                                1983,
+                                2343,
+                                2593,
+                                2283,
+                                2574,
+                                2838,
+                                2382,
+                                2634,
+                                2938,
+                                2739,
+                                2983,
+                                3493
+							]
+						}
+					}, {
+						label: "International",
+						legendEntry: true,
+						markers: {
+							visible: true,
+							type: "circle"
+						},
+						data: {
+							//Y axis values for 2nd series
+							y: [
+                                574,
+                                636,
+                                673,
+                                593,
+                                644,
+                                679,
+                                593,
+                                139,
+                                599,
+                                583,
+                                602,
+                                690
+							]
+						}
+					}],
+					//Override width of lines for both series. More customization can be done, such as fill, stroke (color) etc.
+					seriesStyles: [
+							{ stroke: "rgb(93,165,218)", "stroke-width": 4 },
+							{ stroke: "rgb(250,164,58)", "stroke-width": 4 }
+					],
+					//Override width of lines for both series when hovered. 
+					seriesHoverStyles: [
+							{ "stroke-width": 4 },
+							{ "stroke-width": 4 }
+					],
+					annotations: [
+						{
+							type: "circle",
+							content: "Relative [Center]",
+							tooltip: "Relative [Center]",
+							attachment: "relative",
+							radius: 50,
+							point: { x: 0.5, y: 0.5 },
+							style: { fill: '#01DFD7', "fill-opacity": 0.35 }
+						},
+						{
+							type: "rect",
+							content: "x:600,y:50(Offset-x:50,y:-10)",
+							tooltip: "x:600,y:50(Offset-x:50,y:-10)",
+							attachment: "absolute",
+							width: 150,
+							height: 25,
+							r: 2,
+							point: { x: 600, y: 50 },
+							offset: { x: 50, y: -10 },
+							style: { fill: '#C0AFA7', "fill-opacity": 0.35 }
+						},
+						{
+							type: "circle",
+							content: "Absolute",
+							tooltip: "Absolute",
+							attachment: "absolute",
+							radius: 45,
+							point: { x: 120, y: 150 },
+							style: { fill: '#AA99D0' }
+						},
+						{
+							type: "image",
+							attachment: "dataIndex",
+							href: "./samples/images/wijmo_flexible.png",
+							tooltip: "wijmo_flexible.png",
+							content: "Image",
+							width: 60,
+							height: 60,
+							seriesIndex: 1,
+							pointIndex: 3
+						},
+						{
+							type: "circle",
+							content: "DATA",
+							tooltip: "DATA",
+							attachment: "dataIndex",
+							seriesIndex: 0,
+							pointIndex: 4,
+							radius: 20,
+							style: { fill: '#FF1109', "fill-opacity": 0.22 }
+						},
+						{
+							type: "circle",
+							content: "BOUND",
+							tooltip: "BOUND",
+							attachment: "dataIndex",
+							seriesIndex: 0,
+							pointIndex: 3,
+							radius: 30,
+							style: { fill: '#FFFF01', "fill-opacity": 0.2 }
+						},
+						{
+							type: "rect",
+							content: "SerieTwo",
+							tooltip: "SerieTwo",
+							attachment: "dataIndex",
+							seriesIndex: 0,
+							pointIndex: 0,
+							width: 50,
+							position:"right",
+							height: 30,
+							r: 3,
+							style: {
+								"fill": "#FE2E2E",
+								"stroke": "#FFA9DB",
+								"fill-opacity": 0.5,
+								"stroke-width": 2,
+								"stroke-opacity": 0.75
+							}
+						},
+						{
+							type: "ellipse",
+							content: "SerieOnePointFour",
+							tooltip: "SerieOnePointFour",
+							attachment: "dataIndex",
+							seriesIndex: 1,
+							pointIndex: 4,
+							width: 90,
+							height: 30,
+							r: 3,
+							style: {
+								"fill": "#FF7700",
+								"stroke": "#FFA9DB",
+								"fill-opacity": 0.5,
+								"stroke-width": 2,
+								"stroke-opacity": 0.75
+							}
+						},
+						{
+							type: "line",
+							content: "LineText",
+							tooltip: "LineText",
+							start: { x: 10, y: 10 },
+							end: { x: 100, y: 100 },
+							style: {
+								"fill": "#FE2E2E",
+								"stroke": "#01A9DB",
+								"fill-opacity": 2,
+								"stroke-width": 5,
+								"stroke-opacity": 1
+							}
+						},
+						{
+							type: "text",
+							text: "TextOnlyAnnotation",
+							tooltip: "TextOnlyAnnotation",
+							point: { x: 350, y: 12 },
+							style: {
+								"font-size": 18
+							}
+						},
+						{
+							type: "polygon",
+							content: "Polygon",
+							tooltip: "Polygon",
+							points: [
+										{
+											"x": 200,
+											"y": 0
+										},
+										{
+											"x": 150,
+											"y": 50
+										},
+										{
+											"x": 175,
+											"y": 100
+										},
+										{
+											"x": 225,
+											"y": 100
+										},
+										{
+											"x": 250,
+											"y": 50
+										}
+							],
+							style: {
+								"fill": "#FEAA2E",
+								"stroke": "#01A9DB",
+								"fill-opacity": 0.45,
+							}
+						}
+					]
+
+				});
+			});
+		});
+	</script>
+</head>
+<body class="demo-single">
+	<div class="container">
+		<div class="header">
+			<h2>Annotation</h2>
+		</div>
+		<div class="main demo">
+			<!-- Begin demo markup -->
+			<div id="wijlinechartDefault">
+			</div>
+			<!-- End demo markup -->
+			<div class="demo-options">
+				<!-- Begin options markup -->
+				<!-- End options markup -->
+			</div>
+		</div>
+		<div class="footer demo-description">
+			<p>This demo shows how to use annotations in wijlinechart.</p>
+		</div>
+	</div>
+</body>
+</html>

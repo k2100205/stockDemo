@@ -1,0 +1,251 @@
+package cn.com.ytsf.erp.procedure;
+
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
+
+import oracle.sql.ARRAY;
+import oracle.sql.ArrayDescriptor;
+import oracle.sql.STRUCT;
+import oracle.sql.StructDescriptor;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.hibernate.annotations.Type;
+import org.springframework.jdbc.support.nativejdbc.C3P0NativeJdbcExtractor;
+
+public class Procedure<T> {
+
+	private static Logger logger = LogManager.getLogger("Procedure");
+	private String procName;
+	private T obj;
+	private Class<T> clazz;
+
+	public Procedure(T obj) {
+		this.obj = obj;
+		init();
+	}
+
+	@SuppressWarnings("unchecked")
+	protected void init() {
+		clazz = (Class<T>) obj.getClass();
+		boolean hasDec = clazz.isAnnotationPresent(ProcedureDefine.class);
+		if (!hasDec) {
+			throw new RuntimeException("必须传入ProcedureDefine类！");
+		}
+	}
+
+	public void execute(Connection conn) {
+		CallableStatement cstmt = null;
+		try {
+			conn.setAutoCommit(false);
+			cstmt = conn.prepareCall(this.getProcSql());
+			this.register(cstmt);
+			cstmt.execute();
+			conn.commit();
+			processResult(cstmt);
+		} catch (Exception ex) {
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				logger.error("Error occurred when rollback.", e1);
+			}
+			logger.error("Procedure：" + obj.getClass().getName());
+			logger.error("Error occurred", ex);
+		} finally {
+			if (cstmt != null) {
+				try {
+					cstmt.close();
+				} catch (Exception ex) {
+					logger.error("Error occurred when closing connection...", ex);
+				}
+			}
+		}
+	}
+
+	/*
+	 * private Object getValue(Object value, int type){ Object result = value; switch(type){ case
+	 * Types.BIGINT: result = (Long) value; } return result; }
+	 */
+	protected void processResult(CallableStatement cs) {
+		Field[] fields = clazz.getDeclaredFields();
+
+		for (Field f : fields) {
+			if (f.isAnnotationPresent(OutParam.class)) {
+				try {
+					PropertyDescriptor pd = new PropertyDescriptor(f.getName(), clazz);
+					Method setMethod = pd.getWriteMethod();// 获得get方法
+					OutParam out = f.getAnnotation(OutParam.class);
+					Object r = inteceptOutparam(f, cs.getObject(out.index()));
+					if (logger.isDebugEnabled()) {
+						logger.debug(String.format("invoking method: %s with:%s", setMethod.getName(), r));
+					}
+
+					setMethod.invoke(obj, r);
+				} catch (IntrospectionException e) {
+					logger.error("", e);
+				} catch (IllegalArgumentException e) {
+					logger.error("", e);
+				} catch (IllegalAccessException e) {
+					logger.error("", e);
+				} catch (InvocationTargetException e) {
+					logger.error("", e);
+				} catch (SQLException e) {
+					logger.error("", e);
+				}
+			}
+		}
+	}
+
+	protected String getProcSql() {
+		int totalParam = 0;// inParam and outParam count
+		Field[] fields = clazz.getDeclaredFields();
+		for (Field f : fields) {
+			if (f.isAnnotationPresent(OutParam.class) || f.isAnnotationPresent(InParam.class)) {
+				totalParam++;
+			}
+		}
+		this.procName = clazz.getAnnotation(ProcedureDefine.class).value();
+		if (StringUtils.isBlank(procName)) {
+			throw new RuntimeException("在ProcedureDefine类中必须指明存储过程名！");
+		}
+		StringBuffer result = new StringBuffer("call ");
+		result.append(this.procName.trim());
+		result.append("(");
+		for (int i = 0; i < totalParam; i++) {
+			result.append("?");
+			if (i != totalParam - 1) {
+				result.append(",");
+			}
+		}
+		result.append(")");
+		if (logger.isDebugEnabled()) {
+			logger.debug(String.format("SQL:%s Total parameters:%s", result.toString(), totalParam));
+		}
+		return result.toString();
+	}
+
+	protected CallableStatement register(CallableStatement cs) {
+		regInParam(cs);
+		regOutParam(cs);
+		return cs;
+	}
+
+	/**
+	 * 对Inparam字段值进行处理， 如：将java.util.Date转换为JDBC可处理的java.sql.Date
+	 * 
+	 * @param field
+	 * @param fieldValue
+	 * @return
+	 * @throws SQLException
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	protected Object inteceptInparam(Field field, Object fieldValue, CallableStatement cs) throws SQLException {
+		if (field.getType() == java.util.Date.class && fieldValue instanceof java.util.Date) {
+			if (logger.isDebugEnabled()) {
+				logger.debug(String.format("Converting java.util.Date [%s] to java.sql.Timestamp", fieldValue));
+			}
+			java.util.Date date = (java.util.Date) fieldValue;
+			java.sql.Timestamp sqlDate = new java.sql.Timestamp(date.getTime());
+			return sqlDate;
+		} else if (field.getType() == Boolean.class && fieldValue instanceof Boolean) {
+			return fieldValue == null ? null : ((Boolean) fieldValue ? "Y" : "N");
+		} else if (field.getType() == List.class && fieldValue instanceof List) {
+			if (field.isAnnotationPresent(ListDescriptor.class)) {
+				Connection conn = getNativeConnection(cs.getConnection());
+				ArrayDescriptor oracleList = ArrayDescriptor.createDescriptor(
+				        field.getAnnotation(ListDescriptor.class).value().toUpperCase(), conn);
+				Object[] array = ((List) fieldValue).toArray();
+				// If the element type of list is OracleData, change it to STRUCT
+				if(field.isAnnotationPresent(ObjectDescriptor.class)) {
+					String elementType = field.getAnnotation(ObjectDescriptor.class).value().toUpperCase();
+					array = toStructArray((List<OracleData>) fieldValue, elementType, conn);
+				}
+				return new ARRAY(oracleList, conn, array);
+			}
+		}
+		return fieldValue;
+	}
+	
+	protected STRUCT[] toStructArray(List<OracleData> list, String elementType, Connection conn) throws SQLException{
+		StructDescriptor sd = new StructDescriptor(elementType, conn);
+        STRUCT[] array = new STRUCT[list.size()];
+        for(int i = 0; i < list.size(); i++) {
+        	array[i] = new STRUCT(sd, conn, list.get(i).getArray());
+        }
+        return array;
+	}
+	
+	protected Connection getNativeConnection(Connection conn) throws SQLException {
+		C3P0NativeJdbcExtractor cp30NativeJdbcExtractor = new C3P0NativeJdbcExtractor();
+		conn = cp30NativeJdbcExtractor.getNativeConnection(conn);
+		return conn;
+	}
+
+	protected Object inteceptOutparam(Field field, Object value) {
+		if (field.isAnnotationPresent(Type.class)) {
+			Type out = field.getAnnotation(Type.class);
+			String type = out.type();
+			if ("yes_no".equals(type)) {
+				if ("Y".equals(value)) {
+					value = true;
+				} else {
+					value = false;
+				}
+			}
+		}
+		return value;
+	}
+
+	protected void regInParam(CallableStatement cs) {
+		Field[] fields = clazz.getDeclaredFields();
+		for (Field f : fields) {
+			if (f.isAnnotationPresent(InParam.class)) {
+				PropertyDescriptor pd;
+				try {
+					pd = new PropertyDescriptor(f.getName(), clazz);
+					Method getMethod = pd.getReadMethod();// 获得get方法
+					InParam in = f.getAnnotation(InParam.class);
+					Object fieldValue = getMethod.invoke(obj);
+
+					Object value = inteceptInparam(f, fieldValue, cs);
+					cs.setObject(in.index(), value);
+
+					if (logger.isDebugEnabled()) {
+						logger.debug(String.format(
+						        "Setting Object into CallableStatement: (index[%s],field[%s],value[%s])",
+						        in.index(), f.getName(), fieldValue));
+					}
+				} catch (Exception e) {
+					logger.error("Error occurred when setting in parameter.", e);
+				}
+
+			}
+		}
+	}
+
+	protected void regOutParam(CallableStatement cs) {
+		Field[] fields = clazz.getDeclaredFields();
+		for (Field f : fields) {
+			if (f.isAnnotationPresent(OutParam.class)) {
+				OutParam in = f.getAnnotation(OutParam.class);
+				if (logger.isDebugEnabled()) {
+					logger.debug(String.format("Registering out parameters: (index=%s:type=%s)", in.index(),
+					        in.index()));
+				}
+				try {
+					cs.registerOutParameter(in.index(), in.type());
+				} catch (SQLException e) {
+					logger.error("Error occurred when registering out parameter.", e);
+				}
+			}
+		}
+	}
+}

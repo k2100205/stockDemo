@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<title>BarChart - Annotation</title>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	<meta name="description" content="%description%" />
+	<meta name="keywords" content="" />
+	<meta name="author" content="ComponentOne" />
+
+	<link href="../../../../Themes/rocket/jquery-wijmo.css" rel="stylesheet" type="text/css" />
+    <link href="../../../../css/jquery.wijmo-pro.all.3.20162.103.min.css" rel="stylesheet" type="text/css" />
+    <script src="../../js/require.js" type="text/javascript"></script>
+    <script src="../../js/require.wijmo.config.js" type="text/javascript"></script>
+
+	<script id="scriptInit" type="text/javascript">
+		require(["wijmo.wijbarchart"], function () {
+			$(document).ready(function () {
+				var North = {
+					label: "North",
+					legendEntry: true,
+					data: { x: [new Date(2015, 4, 17), new Date(2015, 4, 18), new Date(2015, 4, 19), new Date(2015, 4, 20), new Date(2015, 4, 21)], y: [20, 22, 19, 24, 25] }
+				}, East = {
+					label: "East",
+					legendEntry: true,
+					data: { x: [new Date(2015, 4, 17), new Date(2015, 4, 18), new Date(2015, 4, 19), new Date(2015, 4, 20), new Date(2015, 4, 21)], y: [8, 12, 10, 12, 15] }
+				}, South = {
+					label: "South",
+					legendEntry: true,
+					data: { x: [new Date(2015, 4, 17), new Date(2015, 4, 18), new Date(2015, 4, 19), new Date(2015, 4, 20)], y: [12, 8, 20, 10] }
+				}, West = {
+					label: "West",
+					legendEntry: true,
+					data: { x: [new Date(2015, 4, 17), new Date(2015, 4, 18), new Date(2015, 4, 19), new Date(2015, 4, 20), new Date(2015, 4, 21)], y: [8, 10, 15, 17, 21] }
+				};
+
+
+				$("#wijbarchart").wijbarchart({
+					horizontal: false,
+					seriesList: [North, East, South, West],
+					showChartLabels: false,
+					axis: {
+						x: {
+							text: "Date",
+							annoFormatString: "D"
+						},
+						y: {
+							text: "Sales Amount"
+						}
+					},
+					legend: {
+						compass: "east",
+						orientation: "vertical",
+						text: "Legend"
+					},
+					header: {
+						text: "Sales of 2014"
+					},
+					annotations: [
+						{
+							type: "circle",
+							content: "Relative [Center]",
+							tooltip: "Relative [Center]",
+							attachment: "relative",
+							radius: 50,
+							point: { x: 0.5, y: 0.5 },
+							style: { fill: '#01DFD7' }
+						},
+						{
+							type: "rect",
+							content: "x:430,y:120(Offset-x:50,y:-10)",
+							tooltip: "x:430,y:120(Offset-x:50,y:-10)",
+							attachment: "absolute",
+							width: 150,
+							height: 25,
+							r:2,
+							point: { x: 430, y: 120 },
+							offset: { x: 50, y: -10 },
+							style: { fill: '#C0AFA7',"fill-opacity":0.35 }
+						},
+						{
+							type: "circle",
+							content: "Absolute",
+							tooltip: "Absolute",
+							attachment: "absolute",
+							radius: 45,
+							point: { x: 120, y: 230 },
+							style: { fill: '#AA99D0' }
+						},
+						{
+							type: "image",
+							attachment: "dataIndex",
+							href: "./samples/images/wijmo_flexible.png",
+							tooltip: "wijmo_flexible.png",
+							content: "Image",
+							width: 60,
+							height: 60,
+							position:"top",
+							seriesIndex: 1,
+							pointIndex: 3
+						},
+						{
+							type: "circle",
+							content: "DATA",
+							tooltip: "DATA",
+							attachment: "dataIndex",
+							seriesIndex: 0,
+							pointIndex: 4,
+							radius: 20,
+							position:"left top",
+							style: { fill: '#FF1109', "fill-opacity": 0.22 }
+						},
+						{
+							type: "circle",
+							content: "BOUND",
+							tooltip: "BOUND",
+							attachment: "dataIndex",
+							seriesIndex: 0,
+							pointIndex: 3,
+							radius: 50,
+							style: { fill: '#FFFF01', "fill-opacity": 0.2 }
+						}, {
+							type: "square",
+							content: "May18,y:19",
+							tooltip: "May18,y:19",
+							attachment: "dataCoordinate",
+							point: { x: new Date(2015, 4, 18), y: 19 },
+							width: 48,
+							style: { fill: '#F0FFD0' }
+						},
+						{
+							type: "rect",
+							content: "SerieThree",
+							tooltip: "SerieThree",
+							attachment: "dataIndex",
+							seriesIndex: 2,
+							pointIndex: 0,
+							width: 50,
+							height: 30,
+							r: 3,
+							style: {
+								"fill": "#FE2E2E",
+								"stroke": "#FFA9DB",
+								"fill-opacity": 0.5,
+								"stroke-width": 2,
+								"stroke-opacity": 0.75
+							}
+						},
+						{
+							type: "ellipse",
+							content: "SerieTwoPointFour",
+							tooltip: "SerieTwoPointFour",
+							attachment: "dataIndex",
+							seriesIndex: 1,
+							pointIndex: 4,
+							width: 90,
+							height: 30,
+							r: 3,
+							style: {
+								"fill": "#FF7700",
+								"stroke": "#FFA9DB",
+								"fill-opacity": 0.5,
+								"stroke-width": 2,
+								"stroke-opacity": 0.75
+							}
+						},
+						{
+							type: "line",
+							content: "LineText",
+							tooltip: "LineText",
+							start: { x: 10, y: 10 },
+							end: { x: 100, y: 100 },
+							style: {
+								"fill": "#FE2E2E",
+								"stroke": "#01A9DB",
+								"fill-opacity": 2,
+								"stroke-width": 5,
+								"stroke-opacity": 1
+							}
+						},
+						{
+							type: "text",
+							text: "TextOnlyAnnotation",
+							tooltip: "TextOnlyAnnotation",
+							point: { x: 350, y: 25 },
+							style: {
+								"fill": "#FE2E2E",
+								"stroke": "#01A9DB",
+								"font-size": 18
+							}
+						},
+						{
+							type: "polygon",
+							content: "Polygon",
+							tooltip: "Polygon",
+							points: [
+										{
+											"x": 200,
+											"y": 0
+										},
+										{
+											"x": 150,
+											"y": 50
+										},
+										{
+											"x": 175,
+											"y": 100
+										},
+										{
+											"x": 225,
+											"y": 100
+										},
+										{
+											"x": 250,
+											"y": 50
+										}
+							],
+							style: {
+								"fill": "#FEAA2E",
+								"stroke": "#01A9DB"
+							}
+						}
+					]
+				});
+			});
+		});
+	</script>
+</head>
+<body class="demo-single">
+	<div class="container">
+		<div class="header">
+			<h2>Annotation</h2>
+		</div>
+		<div class="main demo">
+			<!-- Begin demo markup -->
+			<div id="wijbarchart" style="height: 400px">
+			</div>
+			<!-- End demo markup -->
+			<div class="demo-options">
+				<!-- Begin options markup -->
+				<!-- End options markup -->
+			</div>
+		</div>
+		<div class="footer demo-description">
+			<p>This demo shows how to use annotations in wijbarchart.</p>
+		</div>
+	</div>
+</body>
+</html>

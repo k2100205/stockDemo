@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 177
+/svn/ibm/!svn/ver/8121/7.0%E5%AE%A2%E6%88%B7%E5%8C%96%E5%BC%80%E5%8F%91/7.4%20%E5%BC%80%E5%8F%91%E4%BB%A3%E7%A0%81/00001%20JSP%20Code/erp/src/main/java/cn/com/ytsf/erp/procedure
+END
+OracleData.java
+K 25
+svn:wc:ra_dav:version-url
+V 193
+/svn/ibm/!svn/ver/4438/7.0%E5%AE%A2%E6%88%B7%E5%8C%96%E5%BC%80%E5%8F%91/7.4%20%E5%BC%80%E5%8F%91%E4%BB%A3%E7%A0%81/00001%20JSP%20Code/erp/src/main/java/cn/com/ytsf/erp/procedure/OracleData.java
+END
+HibernateProcSupport.java
+K 25
+svn:wc:ra_dav:version-url
+V 203
+/svn/ibm/!svn/ver/8121/7.0%E5%AE%A2%E6%88%B7%E5%8C%96%E5%BC%80%E5%8F%91/7.4%20%E5%BC%80%E5%8F%91%E4%BB%A3%E7%A0%81/00001%20JSP%20Code/erp/src/main/java/cn/com/ytsf/erp/procedure/HibernateProcSupport.java
+END
+ProcedureDefine.java
+K 25
+svn:wc:ra_dav:version-url
+V 198
+/svn/ibm/!svn/ver/4360/7.0%E5%AE%A2%E6%88%B7%E5%8C%96%E5%BC%80%E5%8F%91/7.4%20%E5%BC%80%E5%8F%91%E4%BB%A3%E7%A0%81/00001%20JSP%20Code/erp/src/main/java/cn/com/ytsf/erp/procedure/ProcedureDefine.java
+END
+ObjectDescriptor.java
+K 25
+svn:wc:ra_dav:version-url
+V 199
+/svn/ibm/!svn/ver/4438/7.0%E5%AE%A2%E6%88%B7%E5%8C%96%E5%BC%80%E5%8F%91/7.4%20%E5%BC%80%E5%8F%91%E4%BB%A3%E7%A0%81/00001%20JSP%20Code/erp/src/main/java/cn/com/ytsf/erp/procedure/ObjectDescriptor.java
+END
+InParam.java
+K 25
+svn:wc:ra_dav:version-url
+V 190
+/svn/ibm/!svn/ver/4360/7.0%E5%AE%A2%E6%88%B7%E5%8C%96%E5%BC%80%E5%8F%91/7.4%20%E5%BC%80%E5%8F%91%E4%BB%A3%E7%A0%81/00001%20JSP%20Code/erp/src/main/java/cn/com/ytsf/erp/procedure/InParam.java
+END
+OutParam.java
+K 25
+svn:wc:ra_dav:version-url
+V 191
+/svn/ibm/!svn/ver/4360/7.0%E5%AE%A2%E6%88%B7%E5%8C%96%E5%BC%80%E5%8F%91/7.4%20%E5%BC%80%E5%8F%91%E4%BB%A3%E7%A0%81/00001%20JSP%20Code/erp/src/main/java/cn/com/ytsf/erp/procedure/OutParam.java
+END
+Procedure.java
+K 25
+svn:wc:ra_dav:version-url
+V 192
+/svn/ibm/!svn/ver/7519/7.0%E5%AE%A2%E6%88%B7%E5%8C%96%E5%BC%80%E5%8F%91/7.4%20%E5%BC%80%E5%8F%91%E4%BB%A3%E7%A0%81/00001%20JSP%20Code/erp/src/main/java/cn/com/ytsf/erp/procedure/Procedure.java
+END
+ListDescriptor.java
+K 25
+svn:wc:ra_dav:version-url
+V 197
+/svn/ibm/!svn/ver/4438/7.0%E5%AE%A2%E6%88%B7%E5%8C%96%E5%BC%80%E5%8F%91/7.4%20%E5%BC%80%E5%8F%91%E4%BB%A3%E7%A0%81/00001%20JSP%20Code/erp/src/main/java/cn/com/ytsf/erp/procedure/ListDescriptor.java
+END

@@ -1,0 +1,7 @@
+package cn.com.ytsf.erp.procedure;
+
+public interface OracleData {
+	
+	public Object[] getArray();
+
+}

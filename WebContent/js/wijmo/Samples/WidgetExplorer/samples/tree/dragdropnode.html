@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Tree Node - Drag & Drop</title>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="description" content="Drag&Drop" />
+    <meta name="keywords" content="" />
+    <meta name="author" content="ComponentOne" />
+    <link href="../../../../Themes/rocket/jquery-wijmo.css" rel="stylesheet" type="text/css" />
+    <link href="../../../../css/jquery.wijmo-pro.all.3.20162.103.min.css" rel="stylesheet" type="text/css" />
+    <script src="../../js/require.js" type="text/javascript"></script>
+    <script src="../../js/require.wijmo.config.js" type="text/javascript"></script>
+    <script id="scriptInit" type="text/javascript">
+        require(["wijmo.wijtree"], function () {
+            var showNodeSettings = function (e, data) {
+                var allowDrag, allowDrop, dragIndex = 0, dropIndex = 0,
+                    nodes = $("#tree").wijtree("getSelectedNodes"),
+                    allowDragRadios = $("input[name='nodedrag']"),
+                    allowDropRadios = $("input[name='nodedrop']");
+
+                if (nodes.length > 0) {
+                    allowDrag = nodes[0].options.allowDrag;
+                    allowDrop = nodes[0].options.allowDrop;
+                    dragIndex = allowDrag === true ? 1 : (allowDrag === false ? 2 : 0);
+                    dropIndex = allowDrop === true ? 1 : (allowDrop === false ? 2 : 0);
+                    allowDragRadios.eq(dragIndex).prop("checked", true);
+                    allowDropRadios.eq(dropIndex).prop("checked", true);
+                }
+            },
+            applyNodeSettings = function () {
+                var allowDragValue = $("input[name='nodedrag']:checked").val(),
+                    allowDropValue = $("input[name='nodedrop']:checked").val(),
+                    nodes = $("#tree").wijtree("getSelectedNodes"),
+                    allowDrag, allowDrop;
+                allowDrag = allowDragValue === "1" ? true : (allowDragValue === "2" ? false : null);
+                allowDrop = allowDropValue === "1" ? true : (allowDropValue === "2" ? false : null);
+                if (nodes.length > 0) {
+                    nodes[0].element.wijtreenode("option", "allowDrag", allowDrag).wijtreenode("option", "allowDrop", allowDrop);
+                }
+                $("#tree").wijtree("option", "allowDrag", $("#treedrag").prop("checked"))
+                    .wijtree("option", "allowDrop", $("#treedrop").prop("checked"));
+            };
+            $(document).ready(function () {
+                var tv = $("#tree").wijtree({
+                    allowDrop: true,
+                    allowDrag: true,
+                    selectedNodeChanged: showNodeSettings
+                });
+                //System files and folders do not allow drag or drop.
+                $("#system").add("#system li").wijtreenode("option", "allowDrag", false)
+                    .wijtreenode("option", "allowDrop", false);
+                //User files and folders allow drag.
+                $("#user").add("#user li").wijtreenode("option", "allowDrag", true);
+                //User folders allow drop.
+                $("#user").wijtreenode("option", "allowDrop", true);
+                //Cannot drop others into the "file" node.
+                $("#user li").wijtreenode("option", "allowDrop", false);
+                //Sets the icon of all parent-nodes as "ui-icon-folder-open"(on expanded) and "ui-icon-folder-collapsed"(on collapsed).
+                $("li.folder").wijtreenode("option", "collapsedIconClass", "ui-icon-folder-collapsed")
+                    .wijtreenode("option", "expandedIconClass", "ui-icon-folder-open");
+                //Sets the icon-class of all leaf-nodes as "ui-icon-document".
+                $("li.file").wijtreenode("option", "itemIconClass", "ui-icon-document");
+                $("#apply").bind("click", applyNodeSettings);
+            });
+        });
+    </script>
+    <style>
+    </style>
+</head>
+<body class="demo-single">
+    <div class="container">
+        <div class="header">
+            <h2>Drag & Drop</h2>
+        </div>
+        <div class="main demo">
+            <!-- Begin demo markup -->
+            <div>
+                <ul id="tree">
+
+                    <li class="folder" id="system"><a><span>System Folder</span></a>
+                        <ul>
+                            <li class="file"><a><span>System File 1</span></a></li>
+                            <li class="file"><a><span>System File 2</span></a></li>
+                            <li class="file"><a><span>System File 3</span></a></li>
+                        </ul>
+                    </li>
+                    <li class="folder" id="user"><a><span>User Folder</span></a>
+                        <ul>
+                            <li class="file"><a><span>User File 1</span></a></li>
+                            <li class="file"><a><span>User File 2</span></a></li>
+                            <li class="file"><a><span>User File 3</span></a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <!-- End demo markup -->
+            <div class="demo-options">
+                <!-- Begin tree options markup -->
+                <label>Tree Settings:</label><br />
+                <input type="checkbox" id="treedrag" checked />
+                <label for="treedrag">AllowDrag</label>&nbsp;
+                <input type="checkbox" id="treedrop" checked />
+                <label for="treedrop">AllowDrop</label><br />
+                <!-- End tree options markup -->
+            </div>
+            <div class="demo-options">
+                <!-- Begin node options markup -->
+                <label>Selected Node Settings:</label><br />
+                <label>AllowDrag:</label>
+                <input type="radio" id="nodedrag_default" name="nodedrag" value="0" checked />
+                <label for="nodedrag_default">Default</label>&nbsp;
+                <input type="radio" id="nodedrag_true" name="nodedrag" value="1" />
+                <label for="nodedrag_true">True</label>&nbsp;
+                <input type="radio" id="nodedrag_false" name="nodedrag" value="2" />
+                <label for="nodedrag_false">False</label><br />
+                <label>AllowDrop:</label>
+                <input type="radio" id="nodedrop_default" name="nodedrop" value="0" checked />
+                <label for="nodedrop_default">Default</label>&nbsp;
+                <input type="radio" id="nodedrop_true" name="nodedrop" value="1" />
+                <label for="nodedrop_true">True</label>&nbsp;
+                <input type="radio" id="nodedrop_false" name="nodedrop" value="2" />
+                <label for="nodedrop_false">False</label><br />
+                <input type="button" value="Apply" id="apply" />
+                <!-- End node options markup -->
+            </div>
+        </div>
+        <div class="footer demo-description">
+            <p>
+                Each node of the wijtree widget allows you to drag and drop by setting the allowDrag
+                and allowDrop properties to true. If you do not set the properties for node, it depends on tree options.
+            </p>
+        </div>
+    </div>
+</body>
+</html>
