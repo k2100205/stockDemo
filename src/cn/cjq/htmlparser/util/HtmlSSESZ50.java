@@ -55,7 +55,6 @@ public class HtmlSSESZ50 {
 			
 			//2.3、净土上述2个Filter形成一个组合逻辑Filter。
 			OrFilter linkFilter = new OrFilter(frameNodeFilter, aNodeFilter);
-			System.out.println(parser);
 			//3、使用parser根据filter来取得所有符合条件的节点
 			NodeList nodeList = parser.extractAllNodesThatMatch(linkFilter);
 			

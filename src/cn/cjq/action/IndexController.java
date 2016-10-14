@@ -10,6 +10,7 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.jasper.tagplugins.jstl.core.Out;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
@@ -36,6 +37,8 @@ import cn.cjq.htmlparser.util.LinkFilter;
 import cn.cjq.service.ScheduleJobService;
 import cn.cjq.service.StockService;
 import cn.cjq.service.TreeService;
+import cn.cjq.util.JsonUtil;
+import net.sf.json.JSONObject;
 
 @Controller
 public class IndexController{
@@ -71,9 +74,31 @@ public class IndexController{
 		       Set<String> urlSet = HtmlSSESZ50.extractLinks(url, linkFilter);  
 		         
 		       Iterator<String> it = urlSet.iterator();  
+		       String str="";
 		        while(it.hasNext()){  
-		           System.out.println(it.next());  
-		       }  
+		         str+=it.next();
+		      
+		        }
+
+		        str=str.substring(str.indexOf("{"), str.length()-1);
+		           JSONObject json=JSONObject.fromObject(str);
+		           String jstr=(String) json.get("result").toString();
+		           jstr=jstr.replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\"","");
+		           String[] num=jstr.split(",");
+		           for(int i=0;i<num.length;i=i+3){
+		        	  System.out.println(num[i]+"    "+num[i+1]+"    "+num[i+2]+"    "); 
+		           }
+
+		           // jstr=jstr.replaceAll("[", "").replaceAll("]", "");
+//		           String jstr="str.substring(str.indexOf("{"), str.length()-1){"+str.substring(str.indexOf("pageHelp")-1, str.length()-1);
+//		          / System.out.println(jstr);
+//
+//		           JSONObject json=JSONObject.fromObject(jstr);
+//		           System.out.println(json.toString());
+                  // String ss[]=json.get  
+		           
+		           
+		       
 
 		return "demo/index";   
 	}
