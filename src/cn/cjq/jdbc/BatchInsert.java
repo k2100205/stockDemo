@@ -42,17 +42,17 @@ public class BatchInsert <T>  {
 			} else {
 				tb = obj.getClass().getAnnotation(Table.class);
 			}
-			String sql = "REPLACE INTO "+tb.name()+" (";
+			StringBuffer sql= new StringBuffer("REPLACE INTO ").append(tb.name()).append(" (");
 			Field[] fields = obj.getClass().getDeclaredFields();
 			for (Field f : fields) {
 				Column col = f.getAnnotation(Column.class);
 				if (col != null) {
-					sql += col.name()+ ",";
+					sql.append(col.name()).append(",");
 				}
 			}
-			sql = sql.substring(0, sql.length() - 1) +" ) VALUES ";
+			sql= new StringBuffer(sql.substring(0, sql.length() - 1)).append(" ) VALUES ");
 			for(T t :list){
-				sql +="(";
+				sql.append("(");
 				Field[] fs = t.getClass().getDeclaredFields();
 				for (Field f : fs) {
 					Column col = f.getAnnotation(Column.class);
@@ -67,24 +67,27 @@ public class BatchInsert <T>  {
 							    f.getGenericType()==Date.class||
 							    f.getGenericType()==Timestamp.class
 									 ){
-								 sql +=  "'"+val.toString()+"',";
+								 sql.append("'") .append(val.toString()).append("',");
 							 }else{
-								 sql +=  val.toString()+",";
+								 sql .append(val.toString()).append(",");
+
 							 }
 							
 						 }else{
-						    sql +=  "null,";
+							 sql .append("null,");
+
 						 }
 					}
 				}
-				sql =sql.substring(0, sql.length() - 1)+"),";
+				sql= new StringBuffer(sql.substring(0, sql.length() - 1)).append("),");
 			}
-			sql = sql.substring(0, sql.length() - 1) ;
+			sql= new StringBuffer(sql.substring(0, sql.length() - 1));
+
 		    logger.info(("sql:"+sql));
 		    ConnectionDB c=new ConnectionDB();
 		    Connection conn = c.getConnection();
 		    conn.setAutoCommit(false);
-		    PreparedStatement pstmt= (PreparedStatement) conn.prepareStatement(sql);
+		    PreparedStatement pstmt= (PreparedStatement) conn.prepareStatement(sql.toString());
 		     ret= pstmt.executeUpdate();
 		    
 		     pstmt.close();

@@ -58,36 +58,6 @@ public class IndexController{
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	public String index(HttpServletRequest request) throws SchedulerException {
 
-		String url = "http://query.sse.com.cn/index/consList.do?jsonCallBack=jQuery111204743864890384226_1476000082076&indexCode=000016&_=1476000082077";  
-		        LinkFilter linkFilter = new LinkFilter(){  
-		            @Override  
-		           public boolean accept(String url) {  
-//		                if(url.contains("baidu")){  
-//		                    return true;  
-//		               }else{  
-//		                   return false;  
-//		                }  
-		            	 return true; 
-		          }  
-		              
-		       };  
-		       Set<String> urlSet = HtmlSSESZ50.extractLinks(url, linkFilter);  
-		         
-		       Iterator<String> it = urlSet.iterator();  
-		       String str="";
-		        while(it.hasNext()){  
-		         str+=it.next();
-		      
-		        }
-
-		        str=str.substring(str.indexOf("{"), str.length()-1);
-		           JSONObject json=JSONObject.fromObject(str);
-		           String jstr=(String) json.get("result").toString();
-		           jstr=jstr.replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\"","");
-		           String[] num=jstr.split(",");
-		           for(int i=0;i<num.length;i=i+3){
-		        	  System.out.println(num[i]+"    "+num[i+1]+"    "+num[i+2]+"    "); 
-		           }
 
 		           // jstr=jstr.replaceAll("[", "").replaceAll("]", "");
 //		           String jstr="str.substring(str.indexOf("{"), str.length()-1){"+str.substring(str.indexOf("pageHelp")-1, str.length()-1);
