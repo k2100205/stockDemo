@@ -17,8 +17,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
     
      <script type="text/javascript" src="js/jquery-3.0.0.js"></script>
+         <link rel="stylesheet" type="text/css" href="js/jquery-easyui-1.4.5/themes/icon.css">
     <link rel="stylesheet" type="text/css" href="js/jquery-easyui-1.4.5/themes/default/easyui.css">
-    <link rel="stylesheet" type="text/css" href="js/jquery-easyui-1.4.5/themes/icon.css">
+
    <link rel="stylesheet" type="text/css" href="js/jquery-easyui-1.4.5/demo/demo.css">
     <script type="text/javascript" src="js/jquery-easyui-1.4.5/jquery.easyui.min.js"></script>
 
@@ -71,7 +72,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	    $('#tr_node').tree({
 	    	url:"tree/node",
 	    	 onClick: function (node) {
-	    		    sub(node.id);
+	    		 var children=$('#tr_node').tree('getChildren',node.target);
+	 
+	    		 
+	    		 if($('#tr_node').tree('isLeaf',node.target)){ 
+	    			 sub(node.id); 
+	    		 }
 
 	    		    $('#tb').tabs('add', {
 	    	            title:  node.text,
