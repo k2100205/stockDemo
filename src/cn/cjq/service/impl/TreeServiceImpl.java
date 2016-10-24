@@ -27,5 +27,14 @@ public class TreeServiceImpl implements TreeService {
 		para.put("TABLE", tree);
 		return treeMapper.find(para);
 	}
+	
+	@Override
+	public List<HashMap<String,Object>> find(TreeVO tree) {
+		
+		Map<String, Object> para=new HashMap<String, Object>();
+		para.put("TABLE", tree);
+		return treeMapper.find(para);
+	}
+	
 
 }

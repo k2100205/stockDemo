@@ -13,5 +13,12 @@ import cn.cjq.bean.TreeVO;
 public interface TreeService {
 	public List<HashMap<String,Object>> findAll();
 
+	/**
+	 * 查找子节点
+	 * @param tree
+	 * @return
+	 */
+	public List<HashMap<String, Object>> find(TreeVO tree);
+
 
 }

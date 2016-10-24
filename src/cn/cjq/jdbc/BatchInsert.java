@@ -1,28 +1,15 @@
 package cn.cjq.jdbc;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.sql.CallableStatement;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import javax.persistence.Column;
 import javax.persistence.Table;
-
 import org.apache.log4j.Logger;
-
-import cn.cjq.ibatis.tool.Provider;
 /**
  * 数据库连接类
  * 说明:JDBC批量插入

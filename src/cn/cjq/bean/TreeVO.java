@@ -1,12 +1,15 @@
 package cn.cjq.bean;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.apache.commons.lang.StringUtils;
 
 import cn.cjq.ibatis.tool.BeanMethod;
 
@@ -30,7 +33,11 @@ public class TreeVO implements Serializable,BeanMethod {
   @Column(name="node_status")
   private String status ;
   
-  private List<TreeVO> treeNsode;
+  
+  private List<TreeVO> children;
+  
+  
+  
 public Long getId() {
 	return id;
 }
@@ -75,16 +82,23 @@ public String getStatus() {
 public void setStatus(String status) {
 	this.status = status;
 }
-public List<TreeVO> getTreeNsode() {
-	return treeNsode;
+
+public List<TreeVO> getChildren() {
+	return children;
 }
-public void setTreeNsode(List<TreeVO> treeNsode) {
-	this.treeNsode = treeNsode;
+public void setChildren(List<TreeVO> children) {
+	this.children = children;
 }
 @Override
 public List<String> setWhere() {
-	// TODO Auto-generated method stub
-	return null;
+	List<String> wheres=new ArrayList<String>();
+	if(pid==null){
+		wheres.add("pid is null ");
+	}
+	if(pid!=null){
+		wheres.add("pid ="+pid);
+	}
+	return wheres;
 }
   
 }

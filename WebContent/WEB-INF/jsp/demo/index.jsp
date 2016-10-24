@@ -54,16 +54,32 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
  function showcontent(language){
 	 $('#content').html('Introduction to ' + language + ' language');
 	 }
+ function sub(pid){
+     $.ajax({
+	        url: 'tree/node?pid='+pid,
+	        dataType: 'json',
+	        success: function(node){
+     		$('#tr_node').tree('append', {
+     			        parent:$('#tr_node').tree('getSelected').target,
+     					data:node
+     				});
+	        }
+	        });
+	 }
+ 
  $(function() {
 	    $('#tr_node').tree({
 	    	url:"tree/node",
 	    	 onClick: function (node) {
+	    		    sub(node.id);
+
 	    		    $('#tb').tabs('add', {
 	    	            title:  node.text,
 	    	            content: '<iframe  src='+node.url+' style="width:100%;height:100%;overflow-x: hidden; overflow-y: hidden;"></iframe>', 
 	    	            closable: true
 
 	    	        });  
+  
 	    	 }		            
 	    });
 	    

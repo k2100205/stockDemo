@@ -30,6 +30,7 @@ import cn.cjq.Job.InitStockHisJob;
 
 import cn.cjq.api.YahooStock;
 import cn.cjq.bean.StockVO;
+import cn.cjq.bean.TreeVO;
 import cn.cjq.htmlparser.util.EasyHtmlParser;
 import cn.cjq.htmlparser.util.HtmlParserTool;
 import cn.cjq.htmlparser.util.HtmlSSESZ50;
@@ -80,10 +81,18 @@ public class IndexController{
 	 */
 	@RequestMapping(value = "/tree/node")
 	@ResponseBody
-	public List<Map<String, Object>> getTreeNode(HttpServletRequest request) 
+	public List<Map<String, Object>> getTreeNode(HttpServletRequest request,Long pid) 
 	{
 		List<Map<String, Object>> list=new  ArrayList<Map<String, Object>>();
-        List<HashMap<String,Object>> ts=  treeservice.findAll();
+		 List<HashMap<String,Object>> ts=null;
+		if(pid==null){
+      ts=  treeservice.findAll();
+		}else{
+			TreeVO tree=new TreeVO();
+			tree.setPid(pid);
+	       ts=  treeservice.find(tree);
+	
+		}
         list.addAll(ts);
         return list;
 	}
