@@ -15,7 +15,6 @@ public interface TreeMapper {
 	@Select("select  id,pid,text,url,icon_cls as iconCls ,node_status as `status`,checked  from tree")
 	public List<HashMap<String,Object>> findAll();
 	
-	@Options(useCache = true, flushCache = false, timeout = 10000)  
 	@SelectProvider(type =Provider.class, method = "select")
     public List<HashMap<String,Object>> find(Map<String, Object> para);
 }

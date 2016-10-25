@@ -78,7 +78,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	    		 if($('#tr_node').tree('isLeaf',node.target)){ 
 	    			 sub(node.id); 
 	    		 }
-
+                    if(node.url=="#"||node.url==null){
+                    	return;
+                    }
 	    		    $('#tb').tabs('add', {
 	    	            title:  node.text,
 	    	            content: '<iframe  src='+node.url+' style="width:100%;height:100%;overflow-x: hidden; overflow-y: hidden;"></iframe>', 
