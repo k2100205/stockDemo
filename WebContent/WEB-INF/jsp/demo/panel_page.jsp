@@ -15,46 +15,68 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <meta name="author" content="cjq">
     <title>demo</title>
     
-
-    
-     <script type="text/javascript" src="js/jquery-3.0.0.js"></script>
-         <link rel="stylesheet" type="text/css" href="js/jquery-easyui-1.4.5/themes/icon.css">
-    <link rel="stylesheet" type="text/css" href="js/jquery-easyui-1.4.5/themes/default/easyui.css">
-
-   <link rel="stylesheet" type="text/css" href="js/jquery-easyui-1.4.5/demo/demo.css">
-    <script type="text/javascript" src="js/jquery-easyui-1.4.5/jquery.easyui.min.js"></script>
+     <script type="text/javascript" src="../js/jquery-3.0.0.js"></script>
+    <link rel="stylesheet" type="text/css" href="../js/jquery-easyui-1.4.5/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/jquery-easyui-1.4.5/themes/icon.css">
+   <link rel="stylesheet" type="text/css" href="../js/jquery-easyui-1.4.5/demo/demo.css">
+    <script type="text/javascript" src="../js/jquery-easyui-1.4.5/jquery.easyui.min.js"></script>
 
 
 </head>
 
 <body>
-<div class="easyui-layout" style="width:100%;height:95%;" data-options="fit:true">
-	<div region="west" split="true" title="导航栏" style="width:200px;">
+
 	<div class="easyui-accordion" >
 
 		<c:forEach var="s" items="${list}">   
         <div title=" ${s.title}" >
 			<div class="easyui-panel" >
 		<ul id="${s.panelNum}" class='panelTree'></ul>
+		${s.panelNum}
 	   </div>
 	   </div>
              
              
             </c:forEach>  
 	</div>
-	</div>
-    <div  id="tb" class="easyui-tabs" data-options="region:'center'" style="background:#eee;overflow-x: hidden; overflow-y: hidden;">
-     
-            <div title="首页" style="padding:20px;display:none;">   
-         
-            </div>    
-
-    </div>  
-</div>
 
 
 </body>
+    <div id="dc" class="easyui-menu" style="width:120px;">
+        <div>插入新菜单</div>
+        <div>删除当前菜单</div>
+        <div>修改菜单名字</div>
+    </div>
+
  <script type="text/javascript" >
+ if (window.Event) 
+	 document.captureEvents(Event.MOUSEUP); 
+	 function nocontextmenu(){ 
+	 event.cancelBubble = true 
+	 event.returnValue = false; 
+	 return false; 
+	 } 
+
+	 function norightclick(e){ 
+	 if (window.Event){ 
+	   if (e.which == 2 || e.which == 3) 
+	   return false; 
+	 } 
+	 else 
+	   if (event.button == 2 || event.button == 3){ 
+	    event.cancelBubble = true 
+	    event.returnValue = false; 
+	    return false; 
+	   } 
+	 } 
+	 document.oncontextmenu = nocontextmenu; // for IE5+ 
+	 document.onmousedown = norightclick; // for all others 
+
+ $(".easyui-accordion").bind('contextmenu',function(e){
+     $('#dc').menu('show', {left: e.pageX,top: e.pageY});
+ });  
+
+ 
  function showcontent(language){
 	 $('#content').html('Introduction to ' + language + ' language');
 	 }

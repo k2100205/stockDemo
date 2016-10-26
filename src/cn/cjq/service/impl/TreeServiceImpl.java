@@ -35,6 +35,18 @@ public class TreeServiceImpl implements TreeService {
 		para.put("TABLE", tree);
 		return treeMapper.find(para);
 	}
-	
 
+	/* (non-Javadoc)
+	 * @see cn.cjq.service.TreeService#findList(cn.cjq.bean.TreeVO)
+	 */
+	@Override
+	public List<TreeVO> find(Map<String, Object> para) {
+		// TODO Auto-generated method stub
+		return treeMapper.findList(para);
+	}
+	
+	@Override
+	public int total(Map<String, Object> para) {
+		return  treeMapper.toal(para);
+	}
 }

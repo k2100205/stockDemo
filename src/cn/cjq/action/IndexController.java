@@ -1,6 +1,5 @@
 package cn.cjq.action;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -31,6 +30,7 @@ import org.springframework.web.servlet.ModelAndView;
 import cn.cjq.Job.InitStockHisJob;
 
 import cn.cjq.api.YahooStock;
+import cn.cjq.bean.DataGrid;
 import cn.cjq.bean.Panel;
 import cn.cjq.bean.StockVO;
 import cn.cjq.bean.TreeVO;
@@ -61,17 +61,66 @@ public class IndexController{
 	PanelService panelService;
 	
 	private List<StockVO> stocklist;
-	
+	Map<String, Object> para=new HashMap<String, Object>();
+
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	public ModelAndView index(HttpServletRequest request) throws SchedulerException {
-
         Panel panel=new Panel();
        List<Panel> list= panelService.find(panel);
        Map<String,Object> map = new HashMap<String,Object>(); 
         map.put("list", list);
-        System.out.println(list.get(0).getTitle());
 		return new ModelAndView("demo/index",map);   
 	}
+	
+	/**
+	 * 打开导航栏维护界面
+	 * 
+	 * @param request
+	 * @return 
+	 */
+	@RequestMapping(value = "/panel/page")
+	public ModelAndView panelPage(HttpServletRequest request) throws SchedulerException {
+        Panel panel=new Panel();
+       List<Panel> list= panelService.find(panel);
+       Map<String,Object> map = new HashMap<String,Object>(); 
+        map.put("list", list);
+		return new ModelAndView("demo/panel_page",map);   
+	}
+	
+	/**
+	 * 打开菜单维护界面
+	 * 
+	 * @param request
+	 * @return 
+	 */
+	@RequestMapping(value = "/tree/page")
+	public String treePage(HttpServletRequest request) throws SchedulerException {
+		return "demo/tree_page";   
+	}
+	
+	
+	/**
+	 * 获取所有tree
+	 * 
+	 * @param request
+	 * @return json数据
+	 */
+	@RequestMapping(value = "/tree/all")
+	@ResponseBody
+	public DataGrid<TreeVO>  getAllTree(HttpServletRequest request,  Integer page,
+	         Integer rows) {
+	    DataGrid<TreeVO> dg = new DataGrid<TreeVO>();  
+	    TreeVO s=new TreeVO();
+		para.put("TABLE", s);
+		para.put("PAGE", page);
+		para.put("PAGE_SIZE", rows);
+	    List<TreeVO> results= treeservice.find(para); 
+	    dg.setTotal(treeservice.total(para));  //总的数据条数,从数据库中查询出来的
+	    dg.setRows(results);
+	    return dg;
+
+	}
+	
 	/**
 	 * tree导航栏
 	 * 

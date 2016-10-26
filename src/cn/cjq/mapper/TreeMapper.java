@@ -17,4 +17,11 @@ public interface TreeMapper {
 	
 	@SelectProvider(type =Provider.class, method = "select")
     public List<HashMap<String,Object>> find(Map<String, Object> para);
+	
+	
+	@SelectProvider(type =Provider.class, method = "select")
+    public List<TreeVO> findList(Map<String, Object> para);
+	
+	@SelectProvider(type =Provider.class, method = "total")
+	public int toal(Map<String, Object> para);
 }
