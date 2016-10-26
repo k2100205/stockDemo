@@ -33,6 +33,9 @@ public class TreeVO implements Serializable,BeanMethod {
   @Column(name="node_status")
   private String status ;
   
+  @Column(name="panel_num")
+  private String panelNum ;
+  
   
   private List<TreeVO> children;
   
@@ -89,12 +92,18 @@ public List<TreeVO> getChildren() {
 public void setChildren(List<TreeVO> children) {
 	this.children = children;
 }
+
+public String getPanelNum() {
+	return panelNum;
+}
+public void setPanelNum(String panelNum) {
+	this.panelNum = panelNum;
+}
 @Override
 public List<String> setWhere() {
 	List<String> wheres=new ArrayList<String>();
-	if(pid==null){
-		wheres.add("pid is null ");
-	}
+	if(StringUtils.isNotBlank(panelNum)){
+		wheres.add("panel_num ='"+panelNum+"'");	}
 	if(pid!=null){
 		wheres.add("pid ="+pid);
 	}

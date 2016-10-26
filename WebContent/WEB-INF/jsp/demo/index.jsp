@@ -4,6 +4,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 %>
 
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="zh-cn">
   <head>
@@ -30,14 +31,16 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <div class="easyui-layout" style="width:100%;height:95%;" data-options="fit:true">>
 	<div region="west" split="true" title="导航栏" style="width:200px;">
 	<div class="easyui-accordion" >
-		<div title="设置" data-options="iconCls:'icon-ok'" style="overflow:auto;">
-			<div class="easyui-panel" >
-		<ul id="tr_node"></ul>
-		
-	</div>
 
+		<c:forEach var="s" items="${list}">   
+        <div title=" ${s.title}" >
+			<div class="easyui-panel" >
+		<ul id="${s.panelNum}" class='panelTree'></ul>
 	   </div>
-	
+	   </div>
+             
+             
+            </c:forEach>  
 	</div>
 	</div>
     <div  id="tb" class="easyui-tabs" data-options="region:'center'" style="background:#eee;overflow-x: hidden; overflow-y: hidden;">
@@ -55,43 +58,51 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
  function showcontent(language){
 	 $('#content').html('Introduction to ' + language + ' language');
 	 }
- function sub(pid){
-     $.ajax({
-	        url: 'tree/node?pid='+pid,
-	        dataType: 'json',
-	        success: function(node){
-     		$('#tr_node').tree('append', {
-     			        parent:$('#tr_node').tree('getSelected').target,
-     					data:node
-     				});
-	        }
-	        });
-	 }
+
  
  $(function() {
-	    $('#tr_node').tree({
-	    	url:"tree/node",
+	 $(".panelTree").each(function(){
+		 var panelNum = $(this).eq(0).attr('id');
+         $(this).tree({
+ 	    	url:"tree/node?panelNum="+panelNum,
 	    	 onClick: function (node) {
-	    		 var children=$('#tr_node').tree('getChildren',node.target);
+	    		 var children=$(this).tree('getChildren',node.target);
 	 
 	    		 
-	    		 if($('#tr_node').tree('isLeaf',node.target)){ 
-	    			 sub(node.id); 
+	    		 if($(this).tree('isLeaf',node.target)){ 
+	    		     $.ajax({
+	    			        url: 'tree/node?pid='+node.id,
+	    			        dataType: 'json',
+	    			        success: function(node){
+	    		     		$("#"+panelNum).tree('append', {
+	    		     			        parent:$("#"+panelNum).tree('getSelected').target,
+	    		     					data:node
+	    		     				});
+	    			        }
+	    			        });
 	    		 }
-                    if(node.url=="#"||node.url==null){
-                    	return;
-                    }
+                   if(node.url=="#"||node.url==null){
+                   	return;
+                   }
+                   
+                   if($("#tb").tabs("exists",node.text)){
+                       $("#tb").tabs("select",node.text);    
+                    }else{
+                   
 	    		    $('#tb').tabs('add', {
 	    	            title:  node.text,
 	    	            content: '<iframe  src='+node.url+' style="width:100%;height:100%;overflow-x: hidden; overflow-y: hidden;"></iframe>', 
 	    	            closable: true
 
 	    	        });  
-  
+                    }
+ 
 	    	 }		            
 	    });
-	    
+		});
 
+	 
+	 
 
 
  
