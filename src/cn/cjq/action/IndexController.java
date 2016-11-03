@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.jasper.tagplugins.jstl.core.Out;
@@ -22,6 +23,7 @@ import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -31,18 +33,23 @@ import cn.cjq.Job.InitStockHisJob;
 
 import cn.cjq.api.YahooStock;
 import cn.cjq.bean.DataGrid;
+import cn.cjq.bean.DataMsg;
 import cn.cjq.bean.Panel;
+import cn.cjq.bean.ProcLogin;
+import cn.cjq.bean.ProcStock;
 import cn.cjq.bean.StockVO;
 import cn.cjq.bean.TreeVO;
 import cn.cjq.htmlparser.util.EasyHtmlParser;
 import cn.cjq.htmlparser.util.HtmlParserTool;
 import cn.cjq.htmlparser.util.HtmlSSESZ50;
 import cn.cjq.htmlparser.util.LinkFilter;
+import cn.cjq.service.LoginService;
 import cn.cjq.service.PanelService;
 import cn.cjq.service.ScheduleJobService;
 import cn.cjq.service.StockService;
 import cn.cjq.service.TreeService;
 import cn.cjq.util.JsonUtil;
+import cn.cjq.util.MD5Tools;
 import net.sf.json.JSONObject;
 
 @Controller
@@ -59,9 +66,12 @@ public class IndexController{
 	YahooStock yahooStock;
 	@Autowired
 	PanelService panelService;
+	@Autowired
+	LoginService loginService;
 	
 	private List<StockVO> stocklist;
 	Map<String, Object> para=new HashMap<String, Object>();
+	private DataMsg msg=new DataMsg();
 
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	public ModelAndView index(HttpServletRequest request) throws SchedulerException {
@@ -72,6 +82,27 @@ public class IndexController{
 		return new ModelAndView("demo/index",map);   
 	}
 	
+	/**
+	 * 打开导航栏维护界面
+	 * 
+	 * @param request
+	 * @return 
+	 */
+	@RequestMapping(value = "demo/login")
+	@ResponseBody
+	public DataMsg login(HttpSession session,String name,String password) throws Exception {
+		if(name!=null&&password!=null){
+			System.out.println(MD5Tools.MD5(password));
+			ProcLogin pl=new ProcLogin();
+			pl.setName(name);
+			pl.setPassword(MD5Tools.MD5(password));
+			loginService.login(pl);
+			msg.setMsgStatus(pl.getMsgStatus());
+			msg.setMsgNum(1);
+			msg.setMsgData(pl.getMsg());
+        }  
+		return msg;
+	}
 	/**
 	 * 打开导航栏维护界面
 	 * 

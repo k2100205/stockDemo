@@ -51,15 +51,63 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
     </div>  
 </div>
+ <div id="dlg" >
+       <form id="ff" method="post">
+   <div>
+		<label for="name">用户名:</label>
+	<input class="easyui-validatebox" type="text" id="name" data-options="required:true" />
+  </div>
+  <div>
+	<label for="num">&nbsp&nbsp&nbsp密码:</label>
+		<input class="easyui-validatebox" type="text" id="password" data-options="required:true" />
+   </div>
 
 
 </body>
  <script type="text/javascript" >
+	$('#dlg').dialog({
+		   title: '登陆',
+		    closed: true,
+	        cache: false,
+		    modal: true,
+		    buttons:[{
+		    					text:'提交',
+		    				handler:function(){
+		    					$.ajax({
+		    				        url: 'demo/login',
+		    				        method: 'POST',
+		    				        data: {name:$("#name").val(),
+		    				        	   password:$("#password").val()},
+		    				        dataType: 'json',
+		    				        success: function(data){
+		    				        	if(data.msgStatus=='E'){
+		    				        		 alert(data.msgData);
+		    				        	}else{
+		    				        		 $('#dlg').dialog('close');
+		    				        		 alert(data.msgData);
+		    				        	}
+		    				        	
+		    				        },
+		    				        error:function(e)
+		    				        {
+		    				        	 alert("发生错误！");
+		    				        }
+
+		    				    });
+
+		    					
+		    				}
+		    				}]
+
+		});
+ 
+ 
  function showcontent(language){
 	 $('#content').html('Introduction to ' + language + ' language');
 	 }
 
  $(function() {
+	 $('#dlg').dialog('open');
 	 $(".panelTree").each(function(){
 		 var panelNum = $(this).eq(0).attr('id');
          $(this).tree({
@@ -99,12 +147,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	    	 }		            
 	    });
 		});
-
-	 
-	 
-
-
- 
 
 	});
 

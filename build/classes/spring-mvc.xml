@@ -34,7 +34,10 @@
             </bean>  
         </mvc:message-converters>  
     </mvc:annotation-driven>
-
+	<mvc:interceptors>
+		<!-- 使用bean定义一个Interceptor，直接定义在mvc:interceptors根下面的Interceptor将拦截所有的请求 -->
+		<bean class="cn.cjq.interceptor.AllInterceptor"/>
+	</mvc:interceptors>
 
 	<!--
 		配置静态资源，直接映射到对应的文件夹，不被DispatcherServlet处理，3.04新增功能，需要重新设置spring-mvc-3.0.xsd
