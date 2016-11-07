@@ -2,6 +2,11 @@
  * 
  */
 package cn.cjq.interceptor;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang.StringUtils;
 /** 
 * @author 作者 CJQ: 
 * @version 创建时间：2016年10月31日 下午3:14:31 
@@ -14,39 +19,69 @@ package cn.cjq.interceptor;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.context.request.WebRequestInterceptor;
+import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.ModelAndView;
 
-public class AllInterceptor implements WebRequestInterceptor {
+public class AllInterceptor implements HandlerInterceptor   {
 	
 	/**
 	 * 在请求处理之前执行，该方法主要是用于准备资源数据的，然后可以把它们当做请求属性放到WebRequest中
 	 */
-	@Override
-	public void preHandle(WebRequest request) throws Exception {
-		// TODO Auto-generated method stub
-//		System.out.println("AllInterceptor...............................");
-//		request.setAttribute("request", "request", WebRequest.SCOPE_REQUEST);//这个是放到request范围内的，所以只能在当前请求中的request中获取到
-//		request.setAttribute("session", "session", WebRequest.SCOPE_SESSION);//这个是放到session范围内的，如果环境允许的话它只能在局部的隔离的会话中访问，否则就是在普通的当前会话中可以访问
-//		request.setAttribute("globalSession", "globalSession", WebRequest.SCOPE_GLOBAL_SESSION);//如果环境允许的话，它能在全局共享的会话中访问，否则就是在普通的当前会话中访问
-	}
+	
 
-	/**
-	 * 该方法将在Controller执行之后，返回视图之前执行，ModelMap表示请求Controller处理之后返回的Model对象，所以可以在
-	 * 这个方法中修改ModelMap的属性，从而达到改变返回的模型的效果。
+	/* (non-Javadoc)
+	 * @see org.springframework.web.servlet.HandlerInterceptor#afterCompletion(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.lang.Object, java.lang.Exception)
 	 */
 	@Override
-	public void postHandle(WebRequest request, ModelMap map) throws Exception {
+	public void afterCompletion(HttpServletRequest arg0, HttpServletResponse arg1, Object arg2, Exception arg3)
+			throws Exception {
 		// TODO Auto-generated method stub
-		System.out.println("-------------------------");
+		
 	}
 
-	/**
-	 * 该方法将在整个请求完成之后，也就是说在视图渲染之后进行调用，主要用于进行一些资源的释放
+	/* (non-Javadoc)
+	 * @see org.springframework.web.servlet.HandlerInterceptor#postHandle(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.lang.Object, org.springframework.web.servlet.ModelAndView)
 	 */
 	@Override
-	public void afterCompletion(WebRequest request, Exception exception)
-	throws Exception {
+	public void postHandle(HttpServletRequest arg0, HttpServletResponse arg1, Object arg2, ModelAndView arg3)
+			throws Exception {
 		// TODO Auto-generated method stub
-//		System.out.println(exception + "-=-=--=--=-=-=-=-=-=-=-=-==-=--=-=-=-=");
+
+		//重定向
+		//arg1.sendRedirect(arg0.getContextPath());
+//		if(arg0.getRequestURI()>0){
+//			arg1.sendRedirect(arg0.getContextPath());  
+//		}
+
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see org.springframework.web.servlet.HandlerInterceptor#preHandle(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.lang.Object)
+	 */
+	@Override
+	public boolean preHandle(HttpServletRequest arg0, HttpServletResponse arg1, Object arg2) throws Exception {
+
+		//创建session
+		HttpSession session =arg0.getSession();
+		
+		//无需登录，允许访问的地址
+		String[] allowUrls =new String[]{"/demo"};
+			
+		//获取请求地址
+		String url =arg0.getRequestURL().toString();
+		
+		//获得session中的用户
+		Integer peopleId =(Integer) session.getAttribute("PEOPLE_ID");
+		System.out.println(arg0.getRequestURI());
+		if(!arg0.getRequestURI().equals("/demo/")){
+			if (peopleId==null) {
+				arg1.sendRedirect(arg0.getContextPath()); 
+				return false;
+			}  
+	     }
+		
+		return true;
 	}
 	
 }

@@ -35,8 +35,18 @@
         </mvc:message-converters>  
     </mvc:annotation-driven>
 	<mvc:interceptors>
+	<mvc:interceptor>  
+
+<mvc:mapping path="/**"/>
+    <mvc:exclude-mapping path="/tree/node"/>
+    <mvc:exclude-mapping path="/demo/**"/>
+  <mvc:exclude-mapping path="/demo/**"/>
+<mvc:exclude-mapping path="/demo"/>
+<mvc:exclude-mapping path="/panel/page"/>
+
 		<!-- 使用bean定义一个Interceptor，直接定义在mvc:interceptors根下面的Interceptor将拦截所有的请求 -->
 		<bean class="cn.cjq.interceptor.AllInterceptor"/>
+		  </mvc:interceptor>  
 	</mvc:interceptors>
 
 	<!--

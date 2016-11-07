@@ -100,6 +100,14 @@ public class IndexController{
 			msg.setMsgStatus(pl.getMsgStatus());
 			msg.setMsgNum(1);
 			msg.setMsgData(pl.getMsg());
+			if(pl.getMsgStatus().equals("S")){
+				session.setAttribute("DUTY_ID", pl.getDutyId()); 
+				session.setAttribute("COMPANY_ID", pl.getCompanyId()); 
+				session.setAttribute("PEOPLE_ID", pl.getPeopleId()); 
+
+			}
+			
+			
         }  
 		return msg;
 	}
