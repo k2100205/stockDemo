@@ -107,7 +107,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	 }
 
  $(function() {
-	 $('#dlg').dialog('open');
+	   $.ajax({
+	        url: 'demo/checkLogin',
+	        dataType: 'json',
+	        cache: false,
+	        success: function(data){
+    	    if(data.msgStatus!="S"){
+    	    	 $('#dlg').dialog('open');
+    	    }
+	        }
+	   });
+	 
 	 $(".panelTree").each(function(){
 		 var panelNum = $(this).eq(0).attr('id');
          $(this).tree({

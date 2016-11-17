@@ -1,10 +1,21 @@
 package cn.cjq.bean;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
+@Entity
+@Table(name = "t_user") 
 public class UserVO {
-
+	@Id
+	@Column(name="user_id")
 	private int id;
+	  
+	@Column(name="user_age")
 	private String age;
+	
+	@Column(name="user_name")
 	private String userName;
 	public UserVO(){
 		super();

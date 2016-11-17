@@ -12,6 +12,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.jasper.tagplugins.jstl.core.Out;
+import org.apache.tomcat.jni.User;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
@@ -39,6 +40,7 @@ import cn.cjq.bean.ProcLogin;
 import cn.cjq.bean.ProcStock;
 import cn.cjq.bean.StockVO;
 import cn.cjq.bean.TreeVO;
+import cn.cjq.bean.UserVO;
 import cn.cjq.htmlparser.util.EasyHtmlParser;
 import cn.cjq.htmlparser.util.HtmlParserTool;
 import cn.cjq.htmlparser.util.HtmlSSESZ50;
@@ -48,6 +50,7 @@ import cn.cjq.service.PanelService;
 import cn.cjq.service.ScheduleJobService;
 import cn.cjq.service.StockService;
 import cn.cjq.service.TreeService;
+import cn.cjq.service.UserService;
 import cn.cjq.util.JsonUtil;
 import cn.cjq.util.MD5Tools;
 import net.sf.json.JSONObject;
@@ -69,9 +72,40 @@ public class IndexController{
 	@Autowired
 	LoginService loginService;
 	
+	@Autowired
+	UserService userService;
+	
 	private List<StockVO> stocklist;
 	Map<String, Object> para=new HashMap<String, Object>();
 	private DataMsg msg=new DataMsg();
+	
+	/**
+	 * 检测缓存是否存在
+	 * 
+	 * @param request
+	 * @return 
+	 */
+	@SuppressWarnings("null")
+	@RequestMapping(value = "demo/checkLogin")
+	@ResponseBody
+	public DataMsg checkLogin(HttpSession session) throws Exception {
+		
+		if(session.getAttribute("PEOPLE_ID")!=null){
+			msg.setMsgStatus("S");
+			msg.setMsgNum(1);
+			msg.setMsgData("无需重新登陆");
+			
+		}else{
+			msg.setMsgStatus("E");
+			msg.setMsgNum(1);
+			msg.setMsgData("请重新登陆");
+			
+		}
+		
+		return msg;
+	}
+	
+	
 
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	public ModelAndView index(HttpServletRequest request) throws SchedulerException {
@@ -137,6 +171,38 @@ public class IndexController{
 		return "demo/tree_page";   
 	}
 	
+	/**
+	 * 打开菜单维护界面
+	 * 
+	 * @param request
+	 * @return 
+	 */
+	@RequestMapping(value = "/user/page")
+	public String userPage(HttpServletRequest request) throws SchedulerException {
+		return "demo/user_page";   
+	}
+	
+	/**
+	 * 获取所有账户
+	 * 
+	 * @param request
+	 * @return json数据
+	 */
+	@RequestMapping(value = "/user/info")
+	@ResponseBody
+	public DataGrid<UserVO>  getUser(HttpServletRequest request,  Integer page,
+	         Integer rows) {
+	    DataGrid<UserVO> dg = new DataGrid<UserVO>();  
+	    UserVO s=new UserVO();
+		para.put("TABLE", s);
+		para.put("PAGE", page);
+		para.put("PAGE_SIZE", rows);
+	    List<UserVO> results= userService.find(para); 
+	    dg.setTotal(userService.total(para));  //总的数据条数,从数据库中查询出来的
+	    dg.setRows(results);
+	    return dg;
+
+	}
 	
 	/**
 	 * 获取所有tree
