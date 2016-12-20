@@ -14,7 +14,7 @@ import org.apache.commons.lang.StringUtils;
 import cn.cjq.ibatis.tool.BeanMethod;
 
 @Entity
-@Table(name = "tree") 
+@Table(name = "tree_v") 
 public class TreeVO implements Serializable,BeanMethod {
   @Id
   @Column(name="id")

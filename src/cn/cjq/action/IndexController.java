@@ -45,6 +45,7 @@ import cn.cjq.htmlparser.util.EasyHtmlParser;
 import cn.cjq.htmlparser.util.HtmlParserTool;
 import cn.cjq.htmlparser.util.HtmlSSESZ50;
 import cn.cjq.htmlparser.util.LinkFilter;
+import cn.cjq.interceptor.Control;
 import cn.cjq.service.LoginService;
 import cn.cjq.service.PanelService;
 import cn.cjq.service.ScheduleJobService;
@@ -89,7 +90,12 @@ public class IndexController{
 	@RequestMapping(value = "demo/checkLogin")
 	@ResponseBody
 	public DataMsg checkLogin(HttpSession session) throws Exception {
-		
+		if(Control.DEV_MODE){
+			msg.setMsgStatus("S");
+			msg.setMsgNum(1);
+			msg.setMsgData("无需重新登陆");
+			return msg;
+		}
 		if(session.getAttribute("PEOPLE_ID")!=null){
 			msg.setMsgStatus("S");
 			msg.setMsgNum(1);
@@ -101,6 +107,7 @@ public class IndexController{
 			msg.setMsgData("请重新登陆");
 			
 		}
+		
 		
 		return msg;
 	}

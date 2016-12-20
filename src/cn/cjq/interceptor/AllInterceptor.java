@@ -62,6 +62,10 @@ public class AllInterceptor implements HandlerInterceptor   {
 	@Override
 	public boolean preHandle(HttpServletRequest arg0, HttpServletResponse arg1, Object arg2) throws Exception {
 
+		
+		if(Control.DEV_MODE){
+			return true;
+		}
 		//创建session
 		HttpSession session =arg0.getSession();
 		
