@@ -51,7 +51,7 @@ td {
             function sync_50() {
 
                 $.ajax({
-        	        url: '../exponent/sync_50',
+        	        url: '../exponent/sync_stockAll',
         	        dataType: 'json',
         	        success: function(data){
        	        	 alert(data.msgData);
@@ -67,6 +67,6 @@ td {
 </head>
 
 <body>
-<button onclick="sync_50()">同步上证50</button>
+<button onclick="sync_50()">全部股票</button>
 </body>
 </html>

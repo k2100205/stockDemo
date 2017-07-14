@@ -12,9 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.cjq.bean.Company;
 import cn.cjq.bean.DataGrid;
-import cn.cjq.bean.People;
 import cn.cjq.service.CompanyService;
-import cn.cjq.service.PeopleService;
 
 @Controller
 public class CompanyController{

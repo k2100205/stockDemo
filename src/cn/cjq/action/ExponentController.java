@@ -18,6 +18,7 @@ import cn.cjq.bean.DataMsg;
 import cn.cjq.bean.ExponentDetail;
 import cn.cjq.bean.ProcStockUpd;
 import cn.cjq.htmlparser.util.HtmlSSESZ50;
+import cn.cjq.htmlparser.util.HtmlStockCode;
 import cn.cjq.htmlparser.util.LinkFilter;
 import cn.cjq.jdbc.BatchInsert;
 import net.sf.json.JSONObject;
@@ -93,7 +94,69 @@ public class ExponentController{
 			return msg;
 		}
 
+		/**
+		 * @param session
+		 * @param 同步全部股票代码
+		 * @return
+		 * @throws Exception
+		 */
+		@RequestMapping(value = "exponent/sync_stockAll")
+		@ResponseBody
+		public DataMsg exponentAllSync(HttpSession session,@ModelAttribute ProcStockUpd procStockUpd) throws Exception {
+			String url = "http://quote.eastmoney.com/stocklist.html";  
+	        LinkFilter linkFilter = new LinkFilter(){  
+	            @Override  
+	           public boolean accept(String url) {  
+//	                if(url.contains("baidu")){  
+//	                    return true;  
+//	               }else{  
+//	                   return false;  
+//	                }  
+	            	 return true; 
+	          }  
+	              
+	       };  
+	       List<String> urlSet = HtmlStockCode.extractLinks(url, linkFilter);  
+	         
+	       Iterator<String> it = urlSet.iterator();  
+	       String str="";
+	       List<ExponentDetail>  list =new ArrayList<ExponentDetail>();
+	        while(it.hasNext()){  
+	         str=it.next();
+       	  String stockNum=str.substring(str.indexOf("(")+1,str.indexOf(")"));
+          String stockName=str.substring(0,str.indexOf("("));
+          String check=stockNum.substring(0, 1);
+     	 ExponentDetail ed=new ExponentDetail();
+     	 System.out.println(check);
+       	  if(check.equals("0")|check.equals("3")){
+           	  ed.setExponentName("深证成指");
+           	  ed.setExponentNum("399001");
+           	  ed.setStockName(stockName);
+           	  ed.setStockNum(stockNum);
+           	 list.add(ed);
+       	  }
 
+       	  if(check.equals("6")){
+             	
+           	  ed.setExponentName("上证指数");
+           	  ed.setExponentNum("0000001");
+           	  ed.setStockName(stockName);
+           	  ed.setStockNum(stockNum);
+           	 list.add(ed);
+       	  }
+       	 
+       	
+
+	        }
+         
+
+            BatchInsert<ExponentDetail> bi=new  BatchInsert<ExponentDetail>();
+            bi.batchInsert(list);
+			msg.setMsgStatus("S");
+			msg.setMsgNum(1);
+			msg.setMsgData("同步成功");
+			return msg;
+		}
 		public DataMsg getMsg() {
 			return msg;
 		}
